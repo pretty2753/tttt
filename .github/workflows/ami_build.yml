@@ -1,10 +1,11 @@
-name: "Packer AMI"
-on:
+name : "packer 만들기"
+on: 
   push:
     branches:
-      - main
+      - main # main 브랜치의 push 면서
     paths:
-      - "packer/**" # packer/ 하위경로에 변화가 있을때 동작하게 한다.
+      - "web/**" #web 하위 경로에 변화가 있을때 동작하게 한다
+  workflow_dispatch: # 원할때 deploy할 수 있는 옵션
 jobs:
   packer_build:
     runs-on: ubuntu-latest
@@ -13,8 +14,33 @@ jobs:
       - name: Checkout Repository # github 저장소로 부터 소스코드 가져오기
         uses: actions/checkout@v4
 
+      - name: Install Ansible   # ansible 설치
+        run: pip install ansible
 
       - name: Setup Packer # ubuntu 에 packer 설치
         uses: hashicorp/setup-packer@main
-        with:
+        with: 
           version: "latest"
+
+      # 인증정보를 환경변수에 넣을수 있지만, 중간에 에러나면 인증키가 노출될 수도 있음
+      - name: Aws configure # aws 인증 정보 제공
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+      
+      - name: Packer Init & Build # 초기화
+        run: |
+          packer init ami_was.pkr.hcl
+          packer build ami_was.pkr.hcl
+        working-directory: ./packer
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v4
+
+      - name: Terraform Init & Apply  # ./terraform 안에 있는 terraform 자원을 init & apply
+        run: |
+          terraform init
+          terraform apply --auto-approve
+        working-directory: ./terraform/envs/dev
