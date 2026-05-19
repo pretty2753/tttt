@@ -46,7 +46,7 @@ resource "aws_autoscaling_group" "asg" {
 
   launch_template {
     id      = aws_launch_template.lt.id
-    version = "$Latest"
+    version = aws_launch_template.lt.latest_version
   }
 
   default_cooldown = 60
@@ -57,7 +57,7 @@ resource "aws_autoscaling_group" "asg" {
       min_healthy_percentage = 50
       instance_warmup        = 60
     }
-    triggers = ["tag"]
+    triggers = ["launch_template"]
   }
 
   tag {
