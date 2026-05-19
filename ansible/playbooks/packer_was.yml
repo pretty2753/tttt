@@ -9,4 +9,4 @@
   roles:
     - nginx
     - fastapi
-    - exporters
+    - node_exporters
