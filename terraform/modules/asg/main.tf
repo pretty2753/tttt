@@ -50,7 +50,24 @@ resource "aws_autoscaling_group" "asg" {
   }
 
   default_cooldown = 60
+
+  instance_refresh {
+    strategy = "Rolling"
+    preferences {
+      min_healthy_percentage = 50
+      instance_warmup        = 60
+    }
+    triggers = ["tag"]
+  }
+
+  tag {
+    key                 = "AMI"
+    value               = data.aws_ami.was_ami.id
+    propagate_at_launch = true
+  }
 }
+
+
 
 # ASG에 의해 생성된 실제 인스턴스의 정보를 조회
 
