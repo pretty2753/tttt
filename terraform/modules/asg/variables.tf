@@ -33,3 +33,13 @@ variable "asg_name" {
 variable "target_group_arns" {
   type = list(string)
 }
+
+variable "instance_warmup" {
+  type    = number
+  default = 180
+}
+
+variable "min_healthy_percentage" {
+  type    = number
+  default = 50
+}

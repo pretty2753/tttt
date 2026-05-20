@@ -46,28 +46,22 @@ resource "aws_autoscaling_group" "asg" {
 
   launch_template {
     id      = aws_launch_template.lt.id
-    version = aws_launch_template.lt.latest_version
+    version = "$Latest"
   }
-
-  default_cooldown = 60
-
+  
+  # 새 인스턴스로 교체하는 설정
   instance_refresh {
     strategy = "Rolling"
     preferences {
-      min_healthy_percentage = 50
-      instance_warmup        = 60
+      # 교체중에 최소한 몇 %의 인스턴스가 살아있어야 하는지 설정
+      min_healthy_percentage = var.min_healthy_percentage
+      # 새 인스턴스가 뜨고 나서 다음 인스턴스를 교체하기 전까지의 시간
+      instance_warmup = var.instance_warmup
     }
-    triggers = ["launch_template"]
   }
 
-  tag {
-    key                 = "AMI"
-    value               = data.aws_ami.was_ami.id
-    propagate_at_launch = true
-  }
+  default_cooldown = 60
 }
-
-
 
 # ASG에 의해 생성된 실제 인스턴스의 정보를 조회
 

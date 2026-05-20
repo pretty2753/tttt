@@ -20,8 +20,11 @@ module "asg" {
 
   security_group_id = module.project01_was_sg.sg_id
 
+  instance_warmup        = 180
+  min_healthy_percentage = 50
+  
   key_name = module.project01_was_ec2_key.key_name
-
+  
   target_group_arns = [
     module.project01_alb.target_group_arn
   ]  
