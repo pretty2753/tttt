@@ -1,4 +1,4 @@
-name : "packer 만들기"
+name: "packer 만들기"
 on: 
   push:
     branches:
