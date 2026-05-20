@@ -58,7 +58,14 @@ resource "aws_autoscaling_group" "asg" {
       # 새 인스턴스가 뜨고 나서 다음 인스턴스를 교체하기 전까지의 시간
       instance_warmup = var.instance_warmup
     }
+    triggers = ["tag"]
   }
+    tag {
+      key                 = "AMI"
+      value               = data.aws_ami.was_ami.id
+      propagate_at_launch = true
+  }
+
 
   default_cooldown = 60
 }
