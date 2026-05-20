@@ -48,7 +48,7 @@
     src: env.j2
     dest: /etc/fastapi/.env
   vars:
-    db_ip: "{{ hostvars['db01']['ansible_host'] }}"  
+    db_ip: "10.0.30.11"  
 
 # ==================================================
 # 2. VENV (최초 1회만 생성)
