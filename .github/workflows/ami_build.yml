@@ -13,7 +13,14 @@ jobs:
     steps:
       - name: Checkout Repository # github 저장소로 부터 소스코드 가져오기
         uses: actions/checkout@v4
-
+      
+      - name: Install FastAPI and dependencies
+        pip:
+          name:
+          - fastapi
+          - "uvicorn[standard]"
+          executable: pip3
+          
       - name: Install Ansible   # ansible 설치
         run: pip install ansible
 
